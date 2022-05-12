@@ -1,0 +1,32 @@
+org: world-org
+app: antarctica
+service: aws-api-gateway-shared
+
+frameworkVersion: "3"
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: ${env:SLS_STAGE}
+  region: ${env:SLS_REGION}
+  deploymentBucket:
+    name: ${env:SLS_BUCKET}
+  apiGateway:
+    restApiId: ${env:SLS_REST_API_ID}
+    restApiRootResourceId: ${env:SLS_REST_API_ROOT_ID}
+    restApiResources:
+      /v3: ${env:SLS_REST_API_ROOT_RESOURCE_ID}
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - http:
+          path: /v3/hello
+          method: get
+          cors: true
+      - http:
+          path: /v3/hello
+          method: options
+          cors: true
